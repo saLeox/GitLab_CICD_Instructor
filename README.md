@@ -13,7 +13,7 @@
 	You have better close the ***shared runner*** as the same time.
 	 ![](https://raw.githubusercontent.com/saLeox/photoHub/main/1619171272.jpg)
 
-<div align=center><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210423175046.png" width="50%"/></div>
+<div align=center><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210423175046.png" width="40%"/></div>
 
  6. Register the runner via the ***interactive commond***.
 	```
@@ -33,6 +33,7 @@ Execute the command to ***start runner***
 	    sudo gitlab-runner restart  ##restart
 	    sudo gitlab-runner --debug run ##debug
 
+
 7. ***Write .gitlab-ci.yml*** to configure your CI/CD Job.
 
 	Ideal process of CICD should look like below:![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423181206.png)
@@ -43,10 +44,12 @@ Execute the command to ***start runner***
 	
 	***Deploy***: Remember to stop and remove the old version containers you want to deploy, them also remove their images.
 
+
  8. ***Run the Pipeline*** and wait for the result.
 
 	 After that, don't forget to check whether the application is running or not.
  ![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423182602.png)
+ 
  
  9. ***Optimize*** the consumed time
  
