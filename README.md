@@ -13,7 +13,7 @@
 	You have better close the ***shared runner*** as the same time.
 	 ![](https://raw.githubusercontent.com/saLeox/photoHub/main/1619171272.jpg)
 
-<div align=left><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210423175046.png" width="50%"/></div>
+<div align=center><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210423175046.png" width="50%"/></div>
 
  6. Register the runner via the ***interactive commond***.
 	```
@@ -26,8 +26,16 @@ Two key points here: *tags* & *executor*:
 > 
 > ***Executor***: Enable Docker commands for your CI/CD jobs. [Shell executor](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-the-shell-executor) is used for EC2 instance, while  [The Docker executor with the Docker image (Docker-in-Docker)](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-the-docker-executor-with-the-docker-image-docker-in-docker) is suitable in the context of Kubernate or other Docker orchestration tools.
 
- 7. ***Write .gitlab-ci.yml*** to configure your CI/CD Job.
-Ideal process of CICD should look like below:![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423181206.png)
+Execute the command to ***start runner***
+
+	    sudo gitlab-runner start ##start
+	    sudo gitlab-runner stop ##stop
+	    sudo gitlab-runner restart  ##restart
+	    sudo gitlab-runner --debug run ##debug
+
+7. ***Write .gitlab-ci.yml*** to configure your CI/CD Job.
+
+	Ideal process of CICD should look like below:![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423181206.png)
 
 	[***A simple example***](https://github.com/saLeox/GitLab_CICD_Instructor/blob/main/gitlab-ci.yml) is provided here. Including two steps: Buid && Deploy.
 
@@ -35,5 +43,28 @@ Ideal process of CICD should look like below:![](https://raw.githubusercontent.c
 	
 	***Deploy***: Remember to stop and remove the old version containers you want to deploy, them also remove their images.
 
- 8. ***Run the Pipeline*** and wait for the result. After that, don't forget to check whether the application is running or not.
+ 8. ***Run the Pipeline*** and wait for the result.
+
+	 After that, don't forget to check whether the application is running or not.
  ![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423182602.png)
+ 
+ 9. ***Optimize*** the consumed time
+ 
+	 The first time to perform the CI/CD job will be slow since there is a need to pull the maven images and pull the maven dependency resources.
+
+	Have better ***use the local installed Docker*** instead of Docker image pulled from Docker, since the maven repo and images can be stored in fixed place, so that will be reused in next time.
+
+	Otherwise, some setting can be appended at the end of ***/etc/gitlab-runner/config.toml***. 
+
+	```
+    [runners.docker]
+      ...
+    volumes = ["/cache", "/root/maven/.m2/:/root/.m2"]
+    pull_policy = ["if-not-present"]
+	```
+
+ - The first config aims to store the maven repo in fixed place by using volumn, so that it doesn't matter even the maven image will change from time to time.
+
+ - The second config changes the docker pull policy, enable to reuse existing images.
+
+	> The always pull policy will ensure that the image is always pulled. When always is used, the Runner will try to pull the image even if a local copy is available. If the image is not found, then the build will fail.
