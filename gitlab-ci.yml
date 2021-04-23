@@ -1,0 +1,40 @@
+#image: docker:20.10.6
+#services:
+#  - docker:20.10.6-dind
+
+stages:
+  - build
+  - deploy
+
+variables:
+  IMAGE_PREFIX: $DOCKER_HUB_USERNAME/$CI_PROJECT_NAME
+  IMAGE_TAG: $DOCKER_HUB_USERNAME/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+  
+before_script:
+  - docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_ACCESS_TOKEN
+
+build:
+  stage: build
+  script:
+    - echo $IMAGE_TAG
+    - docker build --pull -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+  only:
+    - master
+  tags:
+    - develop
+deploy:
+  stage: deploy
+  script:
+    - echo $IMAGE_TAG
+    - if [ "$(docker ps -a | grep $IMAGE_PREFIX)" ]
+    - then docker stop $(docker ps -a | grep $IMAGE_PREFIX | awk '{print $1}') && docker rm $(docker ps -a | grep $IMAGE_PREFIX | awk '{print $1}') -f
+    - fi
+    - if [ "$(docker images -a | grep $IMAGE_PREFIX)" ] 
+    - then docker rmi $(docker images -a | grep $IMAGE_PREFIX | awk '{print $3}') -f
+    - fi
+    - docker run -d --name $CI_PROJECT_NAME -p 8081:8081 $IMAGE_TAG
+  only:
+    - master
+  tags:
+    - develop
