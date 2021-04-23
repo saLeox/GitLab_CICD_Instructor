@@ -35,5 +35,5 @@ Ideal process of CICD should look like below:![](https://raw.githubusercontent.c
 	
 	***Deploy***: Remember to stop and remove the old version containers you want to deploy, them also remove their images.
 
- 8. ***Run the Pipeline*** and wait for the result.
+ 8. ***Run the Pipeline*** and wait for the result. After that, don't forget to check whether the application is running or not.
  ![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423182602.png)
