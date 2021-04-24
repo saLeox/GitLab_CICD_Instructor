@@ -51,23 +51,41 @@ Execute the command to ***start runner***
  ![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423182602.png)
  
  
- 9. ***Optimize*** the consumed time
+ 9. ***Optimize Strategy*** 
  
 	 The first time to perform the CI/CD job will be slow since there is a need to pull the maven images and pull the maven dependency resources.
 
-	Have better ***use the local installed Docker*** instead of Docker image pulled from Docker, since the maven repo and images can be stored in fixed place, so that will be reused in next time.
+	 - [ ] Have better ***use the local installed Docker*** instead of
+	       Docker image pulled from Docker, since the maven repo and images
+	       can be stored in fixed place, so that will be reused in next
+	       time.
 
-	Otherwise, some setting can be appended at the end of ***/etc/gitlab-runner/config.toml***. 
+	 - [ ] If import any image in gitlab-ci.yml, some settings should be
+	       appended at the end of ***/etc/gitlab-runner/config.toml***.
 
-	```
-    [runners.docker]
-      ...
-    volumes = ["/cache", "/root/maven/.m2/:/root/.m2"]
-    pull_policy = ["if-not-present"]
-	```
+		```
+	    [runners.docker]
+	      ...
+	    volumes = ["/cache", "/root/maven/.m2/:/root/.m2"]
+	    pull_policy = ["if-not-present"]
+		```
 
- - The first config aims to store the maven repo in fixed place by using volumn, so that it doesn't matter even the maven image will change from time to time.
+		 The first config aims to store the maven repo in fixed place by using volumn, so that it doesn't matter even the maven image will change from time to time.
 
- - The second config changes the docker pull policy, enable to reuse existing images.
+		 The second config changes the docker pull policy, enable to reuse existing images. Can refer to the official statement as below:
 
-	> The always pull policy will ensure that the image is always pulled. When always is used, the Runner will try to pull the image even if a local copy is available. If the image is not found, then the build will fail.
+		> The always pull policy will ensure that the image is always pulled. When always is used, the Runner will try to pull the image even if a local copy is available. If the image is not found, then the build will fail.
+
+	 - [ ] Before deployment, you can delete all the old version images, but
+	       please ***exclude the latest one*** that generated just now. Otherwise,
+	       need to pull from dockerhub again. Detail showed in the code as following:
+	       
+		``` 
+		if [ "$(docker images -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]
+		``` 
+
+	 - [ ] Optimize the ***docker images building*** process:
+		 - [ ] Import lightweight basic image, such as Alpine, of which lots of language or framework build on the top.
+		 - [ ] Make the core of image as small as possible, for example, use class file rather than java file.
+		 - [ ] Combine the continous RUN  commands by "&&".
+		 - [ ] Apply multi-stages building strategy, make full use of cahce, since it can help save effor, if there are same interlayers from the begining, no matter in image build, pull, or push process. At the same time, you can also only extract the needed stuff from previous layer.  SpringBoot example is [provided](https://www.baeldung.com/docker-layers-spring-boot) inside.
