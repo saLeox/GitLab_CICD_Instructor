@@ -51,7 +51,7 @@ Execute the command to ***start runner***
  ![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423182602.png)
  
  
- 9. ***Optimize Strategy*** 
+ 9. ***Best practice for Optimization*** 
  
 	 The first time to perform the CI/CD job will be slow since there is a need to pull the maven images and pull the maven dependency resources.
 
@@ -87,4 +87,12 @@ Execute the command to ***start runner***
 		 - [ ] Import ***lightweight basic image***, such as Alpine, of which lots of language or framework build on the top.
 		 - [ ] Make the core of ***image as small as possible***, for example, use class file rather than java file.
 		 - [ ] Combine the continous ***RUN***  commands by "&&".
-		 - [ ] Apply ***multi-stages building*** strategy, make full use of ***cahce***, since it can help save effor, if there are same interlayers from the begining, no matter in image build, pull, or push process. At the same time, you can also only ***extract the needed stuff*** from previous layer.  SpringBoot example is [provided](https://www.baeldung.com/docker-layers-spring-boot) inside.
+		 - [ ] Apply ***multi-stages building*** strategy, make full use of ***cahce***, since it can help save effor, if there are same interlayers from the begining, no matter in image build, pull, or push process. At the same time, you can also only ***extract the needed stuff*** from previous layer.  
+			 **SpringBoot multi layer build in docker tutorial is [provided](https://www.baeldung.com/docker-layers-spring-boot) inside.*
+			 
+			In practice, you can should notice:![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210425150805.png)
+
+			![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210425151329.png)
+
+
+***This is the end, cheer up forks!***
