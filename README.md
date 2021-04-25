@@ -70,9 +70,8 @@ Execute the command to ***start runner***
 	    pull_policy = ["if-not-present"]
 		```
 
-		 The first config aims to store the maven repo in fixed place by using volumn, so that it doesn't matter even the maven image will change from time to time.
-
-		 The second config changes the docker pull policy, enable to reuse existing images. Can refer to the official statement as below:
+		 *The **first config** aims to store the maven repo in fixed place by using volumn, so that it doesn't matter even the maven image will change from time to time.
+		 The **second config** changes the docker pull policy, enable to reuse existing images. Can refer to the official statement as below:*
 
 		> The always pull policy will ensure that the image is always pulled. When always is used, the Runner will try to pull the image even if a local copy is available. If the image is not found, then the build will fail.
 
@@ -85,7 +84,7 @@ Execute the command to ***start runner***
 		``` 
 
 	 - [ ] Optimize the ***docker images building*** process:
-		 - [ ] Import lightweight basic image, such as Alpine, of which lots of language or framework build on the top.
-		 - [ ] Make the core of image as small as possible, for example, use class file rather than java file.
-		 - [ ] Combine the continous RUN  commands by "&&".
-		 - [ ] Apply multi-stages building strategy, make full use of cahce, since it can help save effor, if there are same interlayers from the begining, no matter in image build, pull, or push process. At the same time, you can also only extract the needed stuff from previous layer.  SpringBoot example is [provided](https://www.baeldung.com/docker-layers-spring-boot) inside.
+		 - [ ] Import ***lightweight basic image***, such as Alpine, of which lots of language or framework build on the top.
+		 - [ ] Make the core of ***image as small as possible***, for example, use class file rather than java file.
+		 - [ ] Combine the continous ***RUN***  commands by "&&".
+		 - [ ] Apply ***multi-stages building*** strategy, make full use of ***cahce***, since it can help save effor, if there are same interlayers from the begining, no matter in image build, pull, or push process. At the same time, you can also only ***extract the needed stuff*** from previous layer.  SpringBoot example is [provided](https://www.baeldung.com/docker-layers-spring-boot) inside.
