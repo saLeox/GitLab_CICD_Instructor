@@ -90,9 +90,9 @@ Execute the command to ***start runner***
 		 - [ ] Apply ***multi-stages building*** strategy, make full use of ***cahce***, since it can help save effor, if there are same interlayers from the begining, no matter in image build, pull, or push process. At the same time, you can also only ***extract the needed stuff*** from previous layer.  
 			 **SpringBoot multi layer build in docker tutorial is [provided](https://www.baeldung.com/docker-layers-spring-boot) inside.*
 			 
-			In practice, you can should notice:![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210425150805.png)
+			In practice, you can should notice:
+<div align=center><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210425150805.png" width="60%"/></div>
 
-			![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210425151329.png)
-
+<div align=center><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210425151329.png" width="60%"/></div>
 
 ***This is the end, cheer up forks!***
