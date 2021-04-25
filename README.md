@@ -91,8 +91,8 @@ Execute the command to ***start runner***
 			 **SpringBoot multi layer build in docker tutorial is [provided](https://www.baeldung.com/docker-layers-spring-boot) inside.*
 			 
 			In practice, you can should notice:
-<div align=center><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210425150805.png" width="60%"/></div>
+			<div align=left><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210425150805.png" width="60%"/></div>
 
-<div align=center><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210425151329.png" width="60%"/></div>
+			<div align=left><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210425151329.png" width="60%"/></div>
 
 ***This is the end, cheer up forks!***
