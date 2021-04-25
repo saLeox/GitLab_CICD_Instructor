@@ -75,9 +75,7 @@ Execute the command to ***start runner***
 
 		> The always pull policy will ensure that the image is always pulled. When always is used, the Runner will try to pull the image even if a local copy is available. If the image is not found, then the build will fail.
 
-	 - [ ] Before deployment, you can delete all the old version images, but
-	       please ***exclude the latest one*** that generated just now. Otherwise,
-	       need to pull from dockerhub again. Detail showed in the code as following:
+	 - [ ] Before deployment, you can delete all the old version images and their containers, but please ***exclude the latest one*** that generated just now. Otherwise, need to pull from dockerhub again. Detail showed in the code as following:
 	       
 		``` 
 		if [ "$(docker images -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]
@@ -95,4 +93,4 @@ Execute the command to ***start runner***
 
 			<div align=left><img src="https://raw.githubusercontent.com/saLeox/photoHub/main/20210425151329.png" width="60%"/></div>
 
-***This is the end, cheer up forks!***
+***This is the end, cheers! More detail please refer to this rpeo!***
