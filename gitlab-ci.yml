@@ -17,8 +17,7 @@ build:
   stage: build
   script:
     - echo $IMAGE_TAG
-    - docker build --pull -t $IMAGE_TAG .
-    - docker push $IMAGE_TAG
+    - if [ "$(docker images -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA)" ]; then echo No image build or push; else docker build --pull -t $IMAGE_TAG . && docker push $IMAGE_TAG; fi
   only:
     - master
   tags:
@@ -27,13 +26,14 @@ deploy:
   stage: deploy
   script:
     - echo $IMAGE_TAG
-    - if [ "$(docker ps -a | grep $IMAGE_PREFIX)" ]
-    - then docker stop $(docker ps -a | grep $IMAGE_PREFIX | awk '{print $1}') && docker rm $(docker ps -a | grep $IMAGE_PREFIX | awk '{print $1}') -f
-    - fi
-    - if [ "$(docker images -a | grep $IMAGE_PREFIX)" ] 
-    - then docker rmi $(docker images -a | grep $IMAGE_PREFIX | awk '{print $3}') -f
-    - fi
-    - docker run -d --name $CI_PROJECT_NAME -p 8081:8081 $IMAGE_TAG
+    # current version container already fail, then remove
+    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA | grep Exited)" ]; then docker rm $(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA | grep Exited | awk '{print $1}') -f; fi
+    # other version container exist, then stop and remove
+    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]; then docker stop $(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $1}') && docker rm $(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $1}') -f; fi
+    # other version images exist, then remove
+    - if [ "$(docker images -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]; then docker rmi $(docker images -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $3}') -f; fi
+    # no current version container exist, then run a new container
+    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA)" ]; then echo No need to run new container; else docker run -d --name $CI_PROJECT_NAME -p 8081:8081 $IMAGE_TAG; fi
   only:
     - master
   tags:
