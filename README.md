@@ -38,7 +38,7 @@ Execute the command to ***start runner***
 
 	Ideal process of CICD should look like below:![](https://raw.githubusercontent.com/saLeox/photoHub/main/20210423181206.png)
 
-	[***A simple example***](https://github.com/saLeox/GitLab_CICD_Instructor/blob/main/gitlab-ci.yml) is provided here. Including two steps: Buid && Deploy.
+	[***Example of _**gitlab-ci.yml**_***](https://github.com/saLeox/GitLab_CICD_Instructor/blob/main/gitlab-ci.yml) is provided here. Including two steps: Buid && Deploy.
 
 	***Build***: Make sure you already login your DockerHub account before Push.
 	
@@ -75,12 +75,12 @@ Execute the command to ***start runner***
 
 		> The always pull policy will ensure that the image is always pulled. When always is used, the Runner will try to pull the image even if a local copy is available. If the image is not found, then the build will fail.
 
-	 - [ ] Before deployment, you can delete all the old version images and their containers, but please ***exclude the latest one*** that generated just now. Otherwise, need to pull from dockerhub again. Detail showed in the code as following:
+	 - [ ] Before deployment, you can delete all the old version images and their containers, but please ***exclude the latest one*** that generated just now. Otherwise, need to pull from dockerhub again. Detail showed in the code as below:
 	       
 		``` 
 		if [ "$(docker images -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]
 		``` 
-
+		Find more in: [Dockerfile-Springboot-Maven-Example](https://github.com/saLeox/GitLab_CICD_Instructor/blob/main/Dockerfile).
 	 - [ ] Optimize the ***docker images building*** process:
 		 - [ ] Import ***lightweight basic image***, such as Alpine, of which lots of language or framework build on the top.
 		 - [ ] Make the core of ***image as small as possible***, for example, use class file rather than java file.
