@@ -1,5 +1,5 @@
 
-## GitLab_CICD_Instructor (Shell-Executor)
+## GitLab_CICD_Instruction (Shell-Executor)
 
  1. Above all, please ensure there is already a machine(Linux
     preferred), where ***Docker, git and maven are already installed***.
