@@ -1,7 +1,8 @@
+
 ## GitLab_CICD_Instructor (Shell-Executor)
 
  1. Above all, please ensure there is already a machine(Linux
-    preferred), where ***Docker and git are installed***.
+    preferred), where ***Docker, git and maven are already installed***.
  2. Get your own project runnable, with ***dockerfile inside***. And the dockerfile covers two steps: *maven build* and *jar encapsulation*, an example can refer to: [Dockerfile-Springboot-Maven-Example](https://github.com/saLeox/GitLab_CICD_Instructor/blob/main/Dockerfile).
  3. Make GitLab as your ***Code Repository***.
  4. [***Install GitLab Runner***](https://docs.gitlab.com/runner/install/linux-manually.html) on your CI/CD machine, and the whole process will be performed in following way:
@@ -55,10 +56,7 @@ Execute the command to ***start runner***
  
 	 The first time to perform the CI/CD job will be slow since there is a need to pull the maven images and pull the maven dependency resources.
 
-	 - [ ] Have better ***use the local installed Docker*** instead of
-	       Docker image pulled from Docker, since the maven repo and images
-	       can be stored in fixed place, so that will be reused in next
-	       time.
+	 - [ ] Have better ***use the local installed Docker & Maven*** instead of Docker & Maven images pulled from Docker, since the maven repo and images can be stored in fixed place, so that will be reused in next time.
 
 	 - [ ] If import any image in gitlab-ci.yml, some settings should be
 	       appended at the end of ***/etc/gitlab-runner/config.toml***.
@@ -66,12 +64,10 @@ Execute the command to ***start runner***
 		```
 	    [runners.docker]
 	      ...
-	    volumes = ["/cache", "/root/maven/.m2/:/root/.m2"]
 	    pull_policy = ["if-not-present"]
 		```
 
-		 *The **first config** aims to store the maven repo in fixed place by using volumn, so that it doesn't matter even the maven image will change from time to time.
-		 The **second config** changes the docker pull policy, enable to reuse existing images. Can refer to the official statement as below:*
+		 This **config** changes the docker pull policy, enable to reuse existing images. Can refer to the official statement as below:*
 
 		> The always pull policy will ensure that the image is always pulled. When always is used, the Runner will try to pull the image even if a local copy is available. If the image is not found, then the build will fail.
 
