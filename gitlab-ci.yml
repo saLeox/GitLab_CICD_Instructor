@@ -9,32 +9,40 @@ stages:
 variables:
   IMAGE_PREFIX: $DOCKER_HUB_USERNAME/$CI_PROJECT_NAME
   IMAGE_TAG: $DOCKER_HUB_USERNAME/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
-  
+  PORT: 8082
+  DOCKER_NETWORK: my-network
+
 before_script:
   - docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_ACCESS_TOKEN
 
 build:
   stage: build
-  script:
-    - echo $IMAGE_TAG
-    - if [ "$(docker images -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA)" ]; then echo No image build or push; else docker build --pull -t $IMAGE_TAG . && docker push $IMAGE_TAG; fi
   only:
     - master
   tags:
     - develop
+  script:
+    - echo $( mvn -version) 
+    - mvn clean package
+    # && docker push $IMAGE_TAG  // slow to push
+    - if [ "$(docker images -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA)" ]; then echo No image build or push; else docker build --pull -t $IMAGE_TAG . ; fi
+    - echo $(ls) 
+    - echo $(pwd) 
+
 deploy:
   stage: deploy
+  only:
+    - master
+  tags:
+    - develop
   script:
     - echo $IMAGE_TAG
     # current version container already fail, then remove
-    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA | grep Exited)" ]; then docker rm $(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA | grep Exited | awk '{print $1}') -f; fi
+    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA | grep Exited)" ]; then docker network disconnect $DOCKER_NETWORK $CI_PROJECT_NAME && docker rm $(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA | grep Exited | awk '{print $1}') -f; fi
     # other version container exist, then stop and remove
-    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]; then docker stop $(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $1}') && docker rm $(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $1}') -f; fi
+    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]; then docker network disconnect $DOCKER_NETWORK $CI_PROJECT_NAME && docker stop $(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $1}') && docker rm $(docker ps -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $1}') -f; fi
     # other version images exist, then remove
     - if [ "$(docker images -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA)" ]; then docker rmi $(docker images -a | grep $IMAGE_PREFIX | grep -v $CI_COMMIT_SHORT_SHA | awk '{print $3}') -f; fi
     # no current version container exist, then run a new container
-    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA)" ]; then echo No need to run new container; else docker run -d --name $CI_PROJECT_NAME -p 8081:8081 $IMAGE_TAG; fi
-  only:
-    - master
-  tags:
-    - develop
+    - if [ "$(docker ps -a | grep $IMAGE_PREFIX | grep $CI_COMMIT_SHORT_SHA)" ]; then echo No need to run new container; else docker run -d --name $CI_PROJECT_NAME -p $PORT:$PORT $IMAGE_TAG && docker network connect $DOCKER_NETWORK $CI_PROJECT_NAME; fi
+
